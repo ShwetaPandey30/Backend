@@ -1,0 +1,16 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "math.js",
+  "dependencies": {
+    "figlet": "^1.11.0",
+    "random-words": "^2.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shweta Pandey",
+  "license": "ISC",
+  "type": "module"
+}
