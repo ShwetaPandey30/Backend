@@ -4,6 +4,10 @@ const app = express();
 const port = 8080;
 const path = require("path");
 
+const { v4: uuidv4 } =require('uuid');
+
+ 
+
 app.use(express.urlencoded({ extended: true}));
 app.set("view engine" , "ejs");
 app.set("views" , path.join(__dirname, "views"));
@@ -12,22 +16,22 @@ app.use(express.static(path.join(__dirname, "public")));
 
 let posts = [
     {
-        id : "1a",
+        id : uuidv4(),
         username : "Shweta Pandey",
         content : "I manifest to get a job!"
     },
     {
-        id : "2a",
+        id : uuidv4(),
         username : "God",
         content : "Your wishes will come true :)"
     },
     {
-        id : "3a",
+        id : uuidv4(),
         username : "Me",
         content : "Thankyou in beleiveing in me!🙏"
     },
     {
-        id : "4a",
+        id : uuidv4(),
         username : "Ujala Pandey",
         content : "I Got selected for my first internship"
     }
@@ -43,7 +47,8 @@ app.get("/posts/new", (req,res) =>{
 
 app.post("/posts" ,(req,res)=>{
     let {username, content} = req.body;
-    posts.push({ username, content})
+    let id = uuidv4();
+    posts.push({ id,username, content})
     res.redirect("/posts")
 })
 app.get("/posts/:id" ,(req,res)=>{
