@@ -61,6 +61,25 @@ app.get("/user", (req,res)=>{
    
 })
 
+// Edit route
+app.get("/user/:id/edit", (req,res) =>{
+    let { id } = req.params;
+    let q = `SELECT * FROM user WHERE id = '${id}'`
+    try {
+    connection.query(q, (err, result)=>{
+    if(err) throw err;
+    // console.log(result);
+    let user=result[0];
+    res.render("edit.ejs", { user });
+    });
+    }catch(err){
+    console.log(err);
+    res.send("some err in database")
+    }
+    // console.log(id);
+    
+    // res.render("edit.ejs");
+})
 app.listen('8080', () =>{
     console.log("Server is listening to port 8080");
     
