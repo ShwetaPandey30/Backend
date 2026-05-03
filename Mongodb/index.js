@@ -23,21 +23,36 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-User.findByIdAndUpdate("69f70558854ec6f2c6f3e27a", {gender: "female"})
-.then(res=>{
-    console.log(res)
-
+User.deleteMany({age:{$lt: 45}}).then(res=>{
+    console.log(res);
+    
 }).catch(err=>{
     console.log(err);
     
 })
-User.findOneAndUpdate({age: {$gt:35}}, {email: "motilal@yahoo.in"}).then(res=>{
-    console.log(res)
-
+User.findByIdAndDelete("69f70558854ec6f2c6f3e27a").then(res=>{
+    console.log(res);
+    
 }).catch(err=>{
     console.log(err);
     
 })
+
+// User.findByIdAndUpdate("69f70558854ec6f2c6f3e27a", {gender: "female"})
+// .then(res=>{
+//     console.log(res)
+
+// }).catch(err=>{
+//     console.log(err);
+    
+// })
+// User.findOneAndUpdate({age: {$gt:35}}, {email: "motilal@yahoo.in"}).then(res=>{
+//     console.log(res)
+
+// }).catch(err=>{
+//     console.log(err);
+    
+// })
 // User.updateMany({age: {$gt:35}}, {age: 55}).then(res=>{
 //     console.log(res)
 
