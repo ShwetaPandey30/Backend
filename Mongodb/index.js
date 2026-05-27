@@ -23,20 +23,20 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-User.deleteMany({age:{$lt: 45}}).then(res=>{
-    console.log(res);
+// User.deleteMany({age:{$lt: 45}}).then(res=>{
+//     console.log(res);
     
-}).catch(err=>{
-    console.log(err);
+// }).catch(err=>{
+//     console.log(err);
     
-})
-User.findByIdAndDelete("69f70558854ec6f2c6f3e27a").then(res=>{
-    console.log(res);
+// })
+// User.findByIdAndDelete("69f70558854ec6f2c6f3e27a").then(res=>{
+//     console.log(res);
     
-}).catch(err=>{
-    console.log(err);
+// }).catch(err=>{
+//     console.log(err);
     
-})
+// })
 
 // User.findByIdAndUpdate("69f70558854ec6f2c6f3e27a", {gender: "female"})
 // .then(res=>{
