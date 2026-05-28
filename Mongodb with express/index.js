@@ -12,6 +12,11 @@ app.set("view engine", "ejs");
 // -------css folder added-------------------
 app.use(express.static(path.join(__dirname,"public")));
 
+// -----------to parse a data------------------
+
+app.use(express.urlencoded({extended: true}));
+
+//-------------------------------------------------------
 main()
    .then(() => {
     console.log("connection Successful")
@@ -48,7 +53,26 @@ app.get("/chats",async (req,res)=>{
 app.get("/chats/new",(req,res)=>{
     res.render("new.ejs")
 })
-
+// -----------Create Route-------------------
+app.post("/chats", (req,res)=>{
+    let { from, to , msg } = req.body;
+    let newChat =  new Chat({
+        from: from,
+        to: to,
+        msg: msg,
+        created_at : new Date()
+    })
+    newChat.save()
+    .then(res =>{
+        console.log("chat was saved")
+    })
+    .catch(err=>{ 
+        console.log(err)
+    })
+    // res.send("working")
+    res.redirect("/chats")
+});
+//-----------------------------------------------
 app.get("/" ,(req,res)=>{
     res.send("root is working ")
 })
