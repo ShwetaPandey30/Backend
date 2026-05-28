@@ -9,6 +9,9 @@ const Chat = require("./models/chat.js")
 app.set('views', path.join(__dirname,"views"));
 app.set("view engine", "ejs");
 
+// -------css folder added-------------------
+app.use(express.static(path.join(__dirname,"public")));
+
 main()
    .then(() => {
     console.log("connection Successful")
@@ -20,16 +23,27 @@ async function main(){
 }
 
 // -------------newChat------------------------------
-let chat1 = new Chat({
-    from: "neha",  
-    to:   "priya",
-    message: "send me  your  exam",
-    created_at: new Date()
-});
+// let chat1 = new Chat({
+//     from: "Swati",  
+//     to:   "priya",
+//     msg: "Hey! Swati this side",
+//     created_at: new Date()
+// });
 
-chat1.save().then((res) =>{
-    console.log(res)
-});
+// chat1.save().then((res) =>{
+//     console.log(res)
+// });
+
+// -----------Index Rout----------------------------------------
+
+app.get("/chats",async (req,res)=>{
+    let chats = await Chat.find()
+    console.log(chats);
+    res.render("index.ejs", { chats })
+    
+})
+
+
 app.get("/" ,(req,res)=>{
     res.send("root is working ")
 })
