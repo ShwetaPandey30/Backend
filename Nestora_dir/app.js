@@ -33,6 +33,7 @@ async function main(){
 // });
 app.set("view engine","ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.urlencoded({extended: true}))
 
 app.get("/", (req,res)=>{
    res.send("Hi I am root!");
@@ -44,6 +45,12 @@ app.get("/listings",async(req,res)=>{
         res.render("listings/index.ejs",{ allListings })
     
     
+})
+//  Show Route---------------------------------
+app.get("/listings/:id", async(req,res)=>{
+    let { id } = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/show.ejs" , { listing });
 })
 
 app.listen(8080,() =>{
