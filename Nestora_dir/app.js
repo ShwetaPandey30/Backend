@@ -38,7 +38,7 @@ app.get("/", (req,res)=>{
    res.send("Hi I am root!");
 })
 
-// lisiting kr rhe hai taki show kr ske 
+// lisiting kr rhe hai taki show kr ske (Index Route)
 app.get("/listings",async(req,res)=>{
     const allListings = await Listing.find({});
         res.render("listings/index.ejs",{ allListings })
