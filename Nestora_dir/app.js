@@ -87,6 +87,27 @@ app.delete("/listings/:id",async(req,res)=>{
     console.log(deletedListing);
     res.redirect("/listings");
 })
+// Adding defalut image to new lisitngs----
+app.post("/listings", async (req, res) => {
+    let listing = req.body.listing;
+
+    if (!listing.image || listing.image.trim() === "") {
+        listing.image = {
+            filename: "listingimage",
+            url: "https://plus.unsplash.com/premium_photo-1689609950112-d66095626efb?q=80&w=987&auto=format&fit=crop"
+        };
+    } else {
+        listing.image = {
+            filename: "listingimage",
+            url: listing.image
+        };
+    }
+
+    const newListing = new Listing(listing);
+    await newListing.save();
+
+    res.redirect("/listings");
+});
 
 app.listen(8080,() =>{
     console.log("Server is Listening to port 8080")
