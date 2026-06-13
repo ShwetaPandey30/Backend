@@ -3,12 +3,14 @@
         <div class="col-8 offset-2">
     
     <h3>Edit Listing</h3>
-    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT">
+    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation">
         <div class="mb-3">
             <lable for = "title" class="form-label">Title</lable>
             <input name="listing[title]" value="<%= listing.title %>" 
             type="text"
-            class="form-control"/>
+            class="form-control"
+            required/>
+            <div class="invalid-feedback">Please Enter valid Title</div>
         </div>
         
         <div class="mb-3">
@@ -16,30 +18,38 @@
             <textarea 
             name="listing[description]"
             value = "<%= listing.description %>"
-            class="form-control">
+            class="form-control"
+            required>
+            <div class="invalid-feedback">Please Enter a short description</div>
             </textarea>
             
         </div>
         
         <div class="mb-3">
             <lable for = "image" class="form-label">Image Link</lable>
-            <input name="listing[image]" 
-            value="<%= listing.image %>" 
-            type="text" class="form-control"/>
+            <input name="listing[image][url]" 
+            value="<%= listing.image.url %>" 
+            type="text" class="form-control"
+            required/>
+            
         </div>
         <div class="row">
         <div class="mb-3 col-md-4">
             <lable for = "Price" class="form-label">Price</lable>
             <input name="listing[price]" 
             value="<%= listing.price %>" 
-            type="number" class="form-control"/>
+            type="number" class="form-control"
+            required/>
+            <div class="invalid-feedback">Price should be valid</div>
         </div>
         
         <div class="mb-3 col-md-8">
             <lable for = "location" class="form-label">Location</lable>
             <input name="listing[location]" 
             value="<%= listing.location %>" 
-            type="text" class="form-control"/>
+            type="text" class="form-control"
+            required/>
+            <div class="invalid-feedback">location should be valid</div>
         </div>
         </div>
         <div class="mb-3">
@@ -47,7 +57,9 @@
             <input name="listing[country]" 
             value="<%= listing.country %>" 
             type="text"
-            class="form-control"/>
+            class="form-control"
+            required/>
+            <div class="invalid-feedback">Country should be valid</div>
         </div>
         
         <button class="btn btn-dark edit-btn mg-3" >Edit</button>
@@ -55,3 +67,4 @@
     </div>
 
 </div>
+<script src="/js/script.js"></script>

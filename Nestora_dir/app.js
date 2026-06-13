@@ -5,6 +5,8 @@ const Listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride= require("method-override");
 const ejsMate = require("ejs-mate");
+const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require("./utils/ExpressError.js");
 // -----------------Connection to database----------------------
 const MONGO_URL = 'mongodb://127.0.0.1:27017/nestora';
 
@@ -42,74 +44,71 @@ app.get("/", (req,res)=>{
    res.send("Hi I am root!");
 })
 
-// lisiting kr rhe hai taki show kr ske (Index Route)
-app.get("/listings",async(req,res)=>{
+// lisiting kr rhe hai taki show kr ske (Index Route)--------
+app.get("/listings",wrapAsync(async(req,res)=>{
     const allListings = await Listing.find({});
-        res.render("listings/index.ejs",{ allListings })
+    res.render("listings/index.ejs",{ allListings })
     
     
-})
+}));
 // ----New route
 app.get("/listings/new",(req,res)=>{
     res.render("listings/new.ejs");
 })
 //  Show Route---------------------------------
-app.get("/listings/:id", async(req,res)=>{
+app.get("/listings/:id", wrapAsync(async(req,res)=>{
     let { id } = req.params;
     const listing = await Listing.findById(id);
     res.render("listings/show.ejs" , { listing });
-})
+}));
 // Create Rout------------------------------
-app.post("/listings", async(req, res)=>{
-    const newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect("/listings")
+app.post("/listings", wrapAsync(async(req, res, next)=>{
+        if(!req.body.listing){
+            throw new ExpressError(404,"Send valid data for lisitng")
+        }
+        const newListing = new Listing(req.body.listing);
+        await newListing.save();
+        res.redirect("/listings");
+        })
     
-});
+);
 // Edit Route
-app.get("/listings/:id/edit", async(req,res)=>{
+app.get("/listings/:id/edit", wrapAsync(async(req,res)=>{
     let { id } = req.params;
     const listing = await Listing.findById(id);
     res.render("listings/edit.ejs" ,{ listing });
-});
+}));
 
-//Update Route--------------------------------
-app.put("/listings/:id", async(req,res)=>{
+//--------Update Route--------------------------------
+app.put("/listings/:id", wrapAsync(async(req,res)=>{
+    if(!req.body.listing){
+            throw new ExpressError(404,"Send valid data for lisitng")
+        }
     let{ id } = req.params;
+
     await Listing.findByIdAndUpdate(id, {...req.body.listing});
     res.redirect("/listings");
-})
-// ---------Deleteiing this route---------------------
+}));
+// ---------Deleting this route---------------------
 
-app.delete("/listings/:id",async(req,res)=>{
+app.delete("/listings/:id",wrapAsync(async(req,res)=>{
     let{ id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
     console.log(deletedListing);
     res.redirect("/listings");
-})
-// Adding defalut image to new lisitngs----
-app.post("/listings", async (req, res) => {
-    let listing = req.body.listing;
+}));
 
-    if (!listing.image || listing.image.trim() === "") {
-        listing.image = {
-            filename: "listingimage",
-            url: "https://plus.unsplash.com/premium_photo-1689609950112-d66095626efb?q=80&w=987&auto=format&fit=crop"
-        };
-    } else {
-        listing.image = {
-            filename: "listingimage",
-            url: listing.image
-        };
-    }
-
-    const newListing = new Listing(listing);
-    await newListing.save();
-
-    res.redirect("/listings");
+//------------- Custom error handler-----------------------------
+app.all("/*splat",(req,res) => {
+    // next(new ExpressError(404,"Page not found"));
+    res.status(404).send("Page not found");
 });
-// --------------------------------
 
+app.use(( err,req,res,next)=>{
+    let{ statusCode = 500, message="Something went wrong!"} = err;
+    res.status(statusCode).send(message);
+    //res.send("Something went wrong!")
+})
 app.listen(8080,() =>{
     console.log("Server is Listening to port 8080")
 })
