@@ -10,14 +10,12 @@ const ExpressError = require("./utils/ExpressError.js");
 const {listingSchema} = require("./schema.js")
 // -----------------Connection to database----------------------
 const MONGO_URL = 'mongodb://127.0.0.1:27017/nestora';
-
 main().then(() =>{
     console.log("connected to DB");
 })
 .catch((err) =>{
     console.log(err);
 });
-
 async function main(){
     await mongoose.connect(MONGO_URL);
 }
@@ -57,36 +55,36 @@ app.get("/", (req,res)=>{
     }
  };
 
-// lisiting kr rhe hai taki show kr ske (Index Route)--------
+// -----------lisiting kr rhe hai taki show kr ske (Index Route)--------
 app.get("/listings",
     validateListing,
     wrapAsync(async(req,res)=>{
     const allListings = await Listing.find({});
     res.render("listings/index.ejs",{ allListings })
-    
-    
 }));
-// ----New route
+
+// ----New route----------------------------------
 app.get("/listings/new",(req,res)=>{
     res.render("listings/new.ejs");
 })
-//  Show Route---------------------------------
+
+//  -------------Show Route---------------------------------
 app.get("/listings/:id", wrapAsync(async(req,res)=>{
     let { id } = req.params;
     const listing = await Listing.findById(id);
     res.render("listings/show.ejs" , { listing });
 }));
-// Create Rout------------------------------
+
+// -------------Create Rout------------------------------
 app.post("/listings", wrapAsync(async(req, res, next)=>{
-        
-        const newListing = new Listing(req.body.listing);
-        
-        await newListing.save();
-        res.redirect("/listings");
-        })
+    const newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect("/listings");
+    })
     
 );
-// Edit Route
+
+// -----------Edit Route-----------------------------
 app.get("/listings/:id/edit", wrapAsync(async(req,res)=>{
     let { id } = req.params;
     const listing = await Listing.findById(id);
@@ -124,4 +122,4 @@ app.use(( err,req,res,next)=>{
 })
 app.listen(8080,() =>{
     console.log("Server is Listening to port 8080")
-})
+});
