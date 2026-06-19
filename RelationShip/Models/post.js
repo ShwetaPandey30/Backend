@@ -23,7 +23,7 @@ const postSchema = new Schema({
         ref:"User"
     }
 });
-
+x
 const User = mongoose.model("User", userSchema);
 const post = mongoose.model("Post", postSchema);
 
@@ -41,3 +41,7 @@ const addData = async () =>{
     await post1.save();
 }
 addData();
+// demorlization kya hota hai// Intermediate two way referncing--//
+//mongodb.com/blog/post/6-rules-of-thumb-for-mongodb-schema-design
+// Handling Deletion-mongooose Middlewars
+// Query Middlewares
