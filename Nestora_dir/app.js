@@ -9,6 +9,7 @@ const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const {listingSchema} = require("./schema.js")
 const Review = require("./models/review.js");
+const { validateReview } = require("./middleware");
 // -----------------Connection to database----------------------
 const MONGO_URL = 'mongodb://127.0.0.1:27017/nestora';
 main().then(() =>{
@@ -72,7 +73,8 @@ app.get("/listings/new",(req,res)=>{
 //  -------------Show Route---------------------------------
 app.get("/listings/:id", wrapAsync(async(req,res)=>{
     let { id } = req.params;
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate("reviews");
+    // console.log(listing.reviews.length);
     res.render("listings/show.ejs" , { listing });
 }));
 
@@ -89,6 +91,7 @@ app.post("/listings", wrapAsync(async(req, res, next)=>{
 app.get("/listings/:id/edit", wrapAsync(async(req,res)=>{
     let { id } = req.params;
     const listing = await Listing.findById(id);
+    
     res.render("listings/edit.ejs" ,{ listing });
 }));
 
@@ -110,7 +113,7 @@ app.delete("/listings/:id",wrapAsync(async(req,res)=>{
 }));
 
 ////////////Review////////////////////(Post Route)////////////////
-app.post("/listings/:id/reviews", async(req,res) =>{
+app.post("/listings/:id/reviews", validateReview, async(req,res) =>{
     let listing = await Listing.findById(req.params.id);
     let newReview =  new Review(req.body.review);
 
@@ -119,10 +122,22 @@ app.post("/listings/:id/reviews", async(req,res) =>{
     await newReview.save();
     await listing.save();
 
-    console.log("new Review saved");
-    res.send("new review saved");
+    // console.log("new Review saved");
+    res.redirect(`/listings/${listing._id}`);
 })
 
+///-------------Delete Review Route----------------
+app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async(req,res)=>{
+    console.log("Delete Route Hit");
+    let { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId }});
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/listings/${id}`);
+}))
+// app.delete("/listings/:id/reviews/:reviewId", (req, res) => {
+//     console.log("DELETE ROUTE HIT");
+//     res.send("Working");
+// });
 //------------- Custom error handler-----------------------------
 app.all("/*splat",(req,res) => {
     // next(new ExpressError(404,"Page not found"));

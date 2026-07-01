@@ -75,7 +75,7 @@ body {
 }
 
 /* Individual Card */
-.card {
+.listing-card {
     width: 18rem !important;
     border: none !important;
     border-radius: 15px !important;
